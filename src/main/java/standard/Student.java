@@ -4,18 +4,16 @@ package standard;
  * Created by fuyang on 2017/5/15.
  */
 public class Student implements Cloneable{
-    private Integer[] money;
+
+    private int[] money;
     private int age;
 
-    public Student(Integer[] money, int age) {
+    public Student(int[] money, int age) {
         this.money = money;
         this.age = age;
     }
 
-    public Student() {
-    }
-
-    public Integer[] getMoney() {
+    public int[] getMoney() {
         return money;
     }
 
@@ -33,17 +31,12 @@ public class Student implements Cloneable{
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        return new Student(money.clone(),this.age);
-//        return super.clone();
+//        return new Student(money.clone(),this.age);
+        return super.clone();
     }
 
     public static void main(String[] args) {
-        Student student=new Student(new Integer[]{100},25);
-        Student []a=new Student[]{student};
-        Student[]b=a.clone();
-        a[0].setAge(12);
-        System.out.println(a[0]==b[0]);
-        System.out.println(b[0].getAge());
+        Student student=new Student(new int[]{100},25);
         try {
             Student cloneStu=(Student) student.clone();
             System.out.println(cloneStu.getMoney()[0]);
