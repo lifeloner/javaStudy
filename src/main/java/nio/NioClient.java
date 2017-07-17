@@ -7,7 +7,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Created by youngfu on 2017/7/14.
@@ -16,6 +18,7 @@ public class NioClient {
     private Selector selector;
     private Charset charset = Charset.forName("UTF-8");
     private static final int PORT = 6060;
+    private static String userName="";
 
     public void init() {
         try {
@@ -30,7 +33,13 @@ public class NioClient {
             Scanner scan = new Scanner(System.in);
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
-                sc.write(charset.encode(line));
+                if(userName.length()==0){
+                    userName=line;
+                    sc.write(charset.encode(userName));
+                }else {
+                    System.out.println("Me: "+line);
+                    sc.write(charset.encode(userName+"_"+line));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -40,9 +49,13 @@ public class NioClient {
     private class ClientThread implements Runnable {
         public void run() {
             try {
-                while (selector.select() > 0) {
-                    for (SelectionKey sk : selector.selectedKeys()) {
-                        selector.selectedKeys().remove(sk);
+                while (true) {
+                    int k = selector.select();
+                    Set<SelectionKey> keys = selector.selectedKeys();
+                    Iterator<SelectionKey> iterator = keys.iterator();
+                    while (iterator.hasNext()) {
+                        SelectionKey sk = iterator.next();
+                        iterator.remove();
                         if (sk.isReadable()) {
                             //使用 NIO 读取 Channel中的数据
                             SocketChannel sc = (SocketChannel) sk.channel();
@@ -52,19 +65,29 @@ public class NioClient {
                                 buff.flip();
                                 content += charset.decode(buff);
                             }
-                            System.out.println("聊天信息： " + content);
-                            sk.interestOps(SelectionKey.OP_READ);
+                            if (content.length() > 0) {
+                                String[] strs = content.split("_");
+                                if(strs.length>1) {
+                                    System.out.println(strs[0] + ": " + strs[1]);
+                                }else {
+                                    if(content.equals("users already exists!")) {
+                                        System.out.println(content);
+                                        userName = "";
+                                    }else {
+                                        System.out.println(content);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         new NioClient().init();
     }
 }
