@@ -1,12 +1,11 @@
 package campus;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 /**
  * Created by fuyang on 2017/7/24.
  */
-public class Main {
+public class Alibaba {
 
     public static int maxTaoZi(int[] array) {
         if (array.length == 0) {
@@ -56,14 +55,18 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-        int[] array = new int[n];
-        int k = 0;
-        while (n-- > 0) {
-            array[k++] = scanner.nextInt();
-        }
-        System.out.println(maxTao(array));
+//        Scanner scanner = new Scanner(System.in);
+//        int n = scanner.nextInt();
+//        int[] array = new int[n];
+//        int k = 0;
+//        while (n-- > 0) {
+//            array[k++] = scanner.nextInt();
+//        }
+//        System.out.println(maxTao(array));
+//        scanner.close();
+        System.out.println(Integer.MAX_VALUE);
+        long a=Long.MAX_VALUE;
+        System.out.println(a);
     }
 
 }
